@@ -1,0 +1,29 @@
+// This function takes three arguments, GRAPH, QUEUE, and START, where GRAPH is a collection of nodes in the graph, START is the starting node, and Q is a queue of all nodes in the graph  
+DIST =  new Array () // to be the array of distances from the source node 
+
+
+// Set all nodes equal to 99999 except for the start node 
+DIST[START] = 0 
+for each NODE in GRAPH
+	if NOT NODE = START then 
+		DIST[NODE]  =  99999 
+	end if  
+end loop
+
+loop while Q.hasNext() // Main loop 
+	MIN_NODE = Q.getMinimumDist() // This method finds the node in Q with the smallest distance. 
+	NODE = GRAPH[MIN_NODE] // set the current node to MIN_NODE
+	Q.remove(NODE) // remove the current node from the queue 
+
+	NEIGHBOR = nodes connected to NODE
+
+	for each NEIGHBOR 
+		DISTANCE = DIST[NODE] + (DIST[NEIGHBOR] - DIST[NODE]) // calculate the distance to each neighbor node 
+		if DISTANCE < DIST[NEIGHBOR] // if a shorter path to the neighbor node has been found 
+			DIST[NEIGHBOR] = ALT // update distance of neighbor node
+
+		end if 
+	end loop 
+end loop 
+	
+
