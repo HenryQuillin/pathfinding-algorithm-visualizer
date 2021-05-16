@@ -1,6 +1,4 @@
 import pygame
-import math
-from queue import PriorityQueue
 
 width = 800
 height = 600
@@ -16,9 +14,10 @@ START = (255, 165, 0)
 GREY = (128, 128, 128)
 END = (64, 224, 208)
 
-ROWS = 50
+rows = 50
 
-WIN = pygame.display.set_mode((width, height))
+
+win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Pathfinding Algorithm Visualizer")
 
 
@@ -33,7 +32,7 @@ class Node:
         self.neighbors = []
         self.width = node_width
 
-    def draw(self, win):
+    def draw(self):
         pygame.draw.rect(
             win, self.color, (self.x, self.y, self.width, self.width))
 
@@ -50,7 +49,7 @@ def h(p1, p2):
     return abs(x1 - x2) + abs(y1 - y2)
 
 
-def make_grid(rows, width):
+def make_grid():
     grid = []
     gap = width // rows
     for i in range(rows):
@@ -62,7 +61,7 @@ def make_grid(rows, width):
     return grid
 
 
-def draw_grid(win, rows, width):
+def draw_grid(): 
     gap = width // rows
     for i in range(rows):
         pygame.draw.line(win, GREY, (0, i * gap), (width, i * gap))
@@ -70,18 +69,18 @@ def draw_grid(win, rows, width):
             pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
 
 
-def draw(win, grid_arr, rows, width):
+def draw(grid_arr):
     win.fill(EMPTY)
 
     for row in grid_arr:
         for node in row:
-            node.draw(win)
+            node.draw()
 
-    draw_grid(win, rows, width)
+    draw_grid()
     pygame.display.update()
 
 
-def get_clicked_pos(pos, rows, width):
+def get_clicked_pos(pos):
     gap = width // rows
     y = pos[0]
     x = pos[1]
@@ -91,15 +90,14 @@ def get_clicked_pos(pos, rows, width):
     return row, col
 
 
-def main(win, width):
-    rows = 50
-    grid = make_grid(rows, width)
+def main():
+    grid = make_grid()
     start = None
     end = None
     run = True
     started = False
     while run:
-        draw(win, grid, rows, width)
+        draw(grid)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -109,21 +107,21 @@ def main(win, width):
 
             if pygame.mouse.get_pressed()[0]:  # LEFT
                 pos = pygame.mouse.get_pos()
-                row, col = get_clicked_pos(pos, rows, width)
+                row, col = get_clicked_pos(pos)
                 node = grid[row][col]
                 if not start and node != end:
                     start = node
-                    start.make_start()
+                    start.color = START
 
                 elif not end and node != start:
                     end = node
-                    end.make_end()
+                    end.color = END
 
                 elif node != end and node != start:
-                    node.make_barrier()
+                    node.color = WALL 
                 
 
     pygame.quit()
 
 
-main(WIN, width)
+main()
