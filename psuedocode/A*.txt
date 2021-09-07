@@ -1,0 +1,62 @@
+# neighbors = empty nodes that are to the left, right, top, or bottom of current node 
+# Need to check that the adjacent node is not past the end of grid
+# Need to check that the adjacent node is not a wall
+
+
+
+
+// Initialize both open and closed list
+COUNTER = 0
+OPEN_LIST = []
+CLOSED_LIST = []
+// Add the start node
+OPEN_LIST.append(START_NODE)
+// Loop until you find the end
+loop while OPEN_LIST.hasNext()
+    // Get the current node
+    CURRENT_NODE = OPEN_LIST[COUNTER].GetNeighbors().Sort.By.NODE.F[0]// let the currentNode equal the node with the least f value
+    OPEN_LIST.remove(CURRENT_NODE) // remove the currentNode from the openList
+    CLOSED_LIST.add(CURRENT_NODE) // add the currentNode to the closedList
+    // If found the target node
+    if CURRENT_NODE == TARGET_NODE  
+        end if 
+        end loop 
+        // Found the end!
+    end if 
+    
+    // Generate children
+    CHILDREN = NODE.GetNeighbors() // let the children of the currentNode equal the adjacent nodes
+    COUNTER2 = 0
+    while CHILDREN.hasNext()
+        CHILD = CHILDREN[COUNTER2]
+        // Child is on the closedList
+        if CLOSED_LIST.IndexOf[CHILD].TypeOf == int // if child is in the closedList
+            continue // restart and look at next child 
+        // Create the f, g, and h values
+        CHILD.G = CURRENT_NODE.G + CURRENT_NODE.GetDistanceBetweenChildAndCurrent()
+        CHILD.H = CURRENT_NODE.GetDistanceFromChildToEnd()
+        CHILD.F = CHILD.H + CHILD.G
+        // Child is already in openList
+        if CHILD.POSITION.IsInOpenList() 
+            if CHILD.G > OPEN_LIST.GetNodeWithHighestGScore.G // if the child.g is higher than the openList node's g
+                continue // continue to beginning of for loop
+                end if 
+        end if 
+        // Add the child to the openList
+        OPEN_LIST.Append(CHILD) 
+
+
+
+
+SCRATCH PAD
+-----------
+def update_neighbors(self): # method of Node class 
+    if SELF.ROW.is_barrier():
+        SELF.NEIGHBORS.append()
+
+if STARTED == false: # Check if the algorithm is running
+    neighbors = NODE.UPDATE_NEIGHBORS()
+    count = 0 
+    open_set = 
+
+    if ROW < TOTAL_
