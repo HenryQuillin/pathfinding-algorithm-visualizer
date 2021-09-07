@@ -2,10 +2,14 @@
 # Pathfinding Algorithm Visualizer
 # 5 - 19 - 2021
 import pygame
+from queue import PriorityQueue
 
 
-width = 1000
-height = 600
+rows = 50
+
+width = rows * 20
+height = rows * 12
+
 # Initialize colors that will represent node states
 CLOSED = (255, 0, 0)
 GREEN = (0, 255, 0)
@@ -19,7 +23,6 @@ GREY = (128, 128, 128)
 GRID_LINE = (37, 150, 190)
 END = (64, 224, 208)
 
-rows = 50
 
 # Initialize PyGame environmet
 win = pygame.display.set_mode((width, height))
@@ -27,7 +30,7 @@ pygame.display.set_caption("Pathfinding Algorithm Visualizer")
 
 
 class Node:
-    def __init__(self, row, col, node_width):
+    def __init__(self, row, col, node_width, total_rows):
         self.row = row
         self.col = col
         self.x = row * node_width
@@ -35,10 +38,29 @@ class Node:
         self.color = EMPTY
         self.neighbors = []
         self.width = node_width
+        self.total_rows = total_rows
+        self.total_cols = height / self.width
 
     def draw(self):  # draw node method
         pygame.draw.rect(
             win, self.color, (self.x, self.y, self.width, self.width))
+
+    def update_neighbors(self, grid):
+        self.neighbors = []
+        # Check that bottom node is empty node
+        if self.row < self.total_rows - 1 and (grid[self.row + 1][self.col].color != WALL):
+            self.neighbors.append(grid[self.row + 1][self.col])
+
+        # Check that top node is empty node
+        if self.row > 0 and (grid[self.row - 1][self.col].color != WALL):
+            self.neighbors.append(grid[self.row - 1][self.col])
+
+        # Check that right node is empty node
+        if self.col < self.total_cols - 1 and (grid[self.row][self.col + 1].color != WALL):
+            self.neighbors.append(grid[self.row][self.col + 1])
+        # Check that left node is empty node
+        if self.col > 0 and (grid[self.row][self.col - 1].color != WALL):
+            self.neighbors.append(grid[self.row][self.col - 1])
 
 
 def make_grid():  # Creates an array the size of the grid that contains node objects
@@ -47,7 +69,7 @@ def make_grid():  # Creates an array the size of the grid that contains node obj
     for i in range(rows):
         grid.append([])
         for j in range(rows):
-            node = Node(i, j, gap)
+            node = Node(i, j, gap, rows)
             grid[i].append(node)
 
     return grid
@@ -80,6 +102,12 @@ def get_clicked_pos(pos):  # Gets the current position of the mouse
     row = y // gap
     col = x // gap
     return row, col
+
+def aStar(draw, grid, start, end):
+    draw()
+    count = 0 
+    open_set = PriorityQueue() 
+    open_set.put((0,count,)) # add the start node 
 
 
 def main():  # Main loop function
@@ -120,6 +148,16 @@ def main():  # Main loop function
                     node = None
                 elif node == end:
                     end = None
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and not started: 
+                    for row in grid:
+                        for node in row:
+                            node.update_neighbors()
+                    
+                    aStar(Lambda: draw(win,grid,rows, width), grid, start, end)
+                
+
 
     pygame.quit()
 
