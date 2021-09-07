@@ -4,7 +4,7 @@
 import pygame
 
 
-width = 800
+width = 1000
 height = 600
 # Initialize colors that will represent node states
 CLOSED = (255, 0, 0)
@@ -16,6 +16,7 @@ WALL = (0, 0, 0)
 PATH = (128, 0, 128)
 START = (255, 165, 0)
 GREY = (128, 128, 128)
+GRID_LINE = (37, 150, 190)
 END = (64, 224, 208)
 
 rows = 50
@@ -55,9 +56,9 @@ def make_grid():  # Creates an array the size of the grid that contains node obj
 def draw_grid():  # Draws grid lines
     gap = width // rows
     for i in range(rows):
-        pygame.draw.line(win, GREY, (0, i * gap), (width, i * gap))
+        pygame.draw.line(win, GRID_LINE, (0, i * gap), (width, i * gap))
         for j in range(rows):
-            pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
+            pygame.draw.line(win, GRID_LINE, (j * gap, 0), (j * gap, width))
 
 
 def draw(grid_arr):  # Draws nodes on the grid
@@ -114,8 +115,8 @@ def main():  # Main loop function
                 pos = pygame.mouse.get_pos()   # get the postion of the mouse
                 row, col = get_clicked_pos(pos)
                 node = grid[row][col]
-                node.color = EMPTY 
-                if node == start:  
+                node.color = EMPTY
+                if node == start:
                     node = None
                 elif node == end:
                     end = None
