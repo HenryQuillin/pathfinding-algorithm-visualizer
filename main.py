@@ -114,8 +114,8 @@ def main():  # Main loop function
                 pos = pygame.mouse.get_pos()   # get the postion of the mouse
                 row, col = get_clicked_pos(pos)
                 node = grid[row][col]
-                node.color = EMPTY
-                if node == start:
+                node.color = EMPTY 
+                if node == start:  
                     node = None
                 elif node == end:
                     end = None
