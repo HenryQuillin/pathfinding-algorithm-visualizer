@@ -33,23 +33,29 @@ loop while OPEN_LIST.hasNext()
     COUNTER2 = 0
     while CHILDREN.hasNext()
         CHILD = CHILDREN[COUNTER2]
-        // Child is on the closedList
-        if CLOSED_LIST.IndexOf[CHILD].TypeOf == int // if child is in the closedList
+
+        // Check if child is on the closedList
+        if CLOSED_LIST.IndexOf[CHILD].TypeOf == int 
             continue // restart and look at next child 
+        end if
         // Create the f, g, and h values
         CHILD.G = CURRENT_NODE.G + CURRENT_NODE.GetDistanceBetweenChildAndCurrent()
         CHILD.H = CURRENT_NODE.GetDistanceFromChildToEnd()
         CHILD.F = CHILD.H + CHILD.G
-        // Child is already in openList
+
+        // Check if child is already in openList
         if CHILD.POSITION.IsInOpenList() 
             if CHILD.G > OPEN_LIST.GetNodeWithHighestGScore.G // if the child.g is higher than the openList node's g
                 continue // continue to beginning of for loop
                 end if 
         end if 
+
         // Add the child to the openList
         OPEN_LIST.Append(CHILD) 
         COUNTER2 = COUNTER2 + 1
+        
     COUNTER = COUNTER + 1
+    end loop
 end loop    
 
 
