@@ -1,6 +1,7 @@
-# neighbors = empty nodes that are to the left, right, top, or bottom of current node 
-# Need to check that the adjacent node is not past the end of grid
-# Need to check that the adjacent node is not a wall
+// neighbors = empty nodes that are to the left, right, top, or bottom of current node 
+// Inside the GetNeighbors() method: 
+//  Need to check that the adjacent node is not past the end of grid
+//  Need to check that the adjacent node is not a wall
 
 
 
@@ -53,7 +54,7 @@ loop while OPEN_LIST.hasNext()
         // Add the child to the openList
         OPEN_LIST.Append(CHILD) 
         COUNTER2 = COUNTER2 + 1
-        
+
     COUNTER = COUNTER + 1
     end loop
 end loop    
