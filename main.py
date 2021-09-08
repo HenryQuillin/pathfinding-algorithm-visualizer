@@ -103,11 +103,37 @@ def get_clicked_pos(pos):  # Gets the current position of the mouse
     col = x // gap
     return row, col
 
+
+def h(p1, p2):  # calculates the distance of a given node to the end node
+    x1, y1 = p1
+    x2, y2 = p2
+    return abs(x1 - x2) + abs(y1 - y2)
+
+
 def aStar(draw, grid, start, end):
     draw()
-    count = 0 
-    open_set = PriorityQueue() 
-    open_set.put((0,count,)) # add the start node 
+    count = 0  # used in the case that two nodes have the same F score
+    open_set = PriorityQueue()  # queue that stores the f_score, count, and node
+    open_set.put((0, count, start))  # add the start node
+    came_from = {}
+    for row in grid:
+        for node in row:
+            g_score = {node: float("inf")}
+    g_score[start] = 0
+    for row in grid:
+        for node in row:
+            f_score = {node: float("inf")}
+    f_score[start] = h(start.get_pos(), end.get_pos())
+
+    # need to have an open set hash to check if an Item is in the priority queue
+    open_set_hash = {start}
+
+    while open_set.empty() == False:
+        for event in pygame.event.get():  # Allows the user to quit
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+        current_node = open_set.get()[2]  # gets the node from the open set
 
 
 def main():  # Main loop function
@@ -150,14 +176,12 @@ def main():  # Main loop function
                     end = None
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and not started: 
+                if event.key == pygame.K_SPACE and not started:
                     for row in grid:
                         for node in row:
                             node.update_neighbors()
-                    
-                    aStar(Lambda: draw(win,grid,rows, width), grid, start, end)
-                
 
+                    aStar(Lambda: draw(win, grid, rows, width), grid, start, end)
 
     pygame.quit()
 
