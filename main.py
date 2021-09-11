@@ -2,11 +2,32 @@ import pygame
 import math
 from queue import PriorityQueue
 from node import Node
+import thorpy
 
+pygame.init()
 
 WIDTH = 600
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("A* Path Finding A_star")
+
+rect_painter = thorpy.painters.roundrect.RoundRect(size=(50, 50),
+                                                   color=(255, 255, 55),
+                                                   radius=0.3)
+
+start_button = thorpy.Clickable("START")
+end_button = thorpy.Clickable("END")
+start_button.set_painter(rect_painter)
+end_button.set_painter(rect_painter)
+start_button.finish()
+end_button.finish()
+box = thorpy.Box(elements=[start_button, end_button])
+thorpy.store(box, mode="h")
+box.fit_children()
+
+
+
+# we regroup all elements on a menu, even if we do not launch the menu
+menu = thorpy.Menu(box)
 
 CLOSED = (255, 0, 0)
 OPEN = (0, 255, 0)
@@ -93,12 +114,24 @@ def make_grid(rows, width):
     return grid
 
 
+def draw_buttons():
+    # important : set the screen as surface for all elements
+    for element in menu.get_population():
+        element.surface = WIN
+        # use the elements normally...
+        box.center()
+        box.blit()
+        box.update()
+
+
 def draw_grid(win, rows, width):
     gap = width // rows
+
     for i in range(rows):
         pygame.draw.line(win, GREY, (0, i * gap), (width, i * gap))
         for j in range(rows):
             pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
+    draw_buttons()
 
 
 def draw(win, grid, rows, width):
@@ -155,7 +188,7 @@ def main(win, width):
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, ROWS, width)
                 node = grid[row][col]
-                node.reset()
+                node.type = EMPTY
                 if node == start:
                     start = None
                 elif node == end:
@@ -168,12 +201,13 @@ def main(win, width):
                             node.update_neighbors(grid)
 
                     A_star(lambda: draw(win, grid, ROWS, width),
-                              grid, start, end)
+                           grid, start, end)
 
                 if event.key == pygame.K_c:
                     start = None
                     end = None
                     grid = make_grid(ROWS, width)
+            menu.react(event)
 
     pygame.quit()
 
