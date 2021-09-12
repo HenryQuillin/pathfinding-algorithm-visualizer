@@ -28,16 +28,25 @@ def start_button_pressed(draw, grid, start, end):
 
         A_star(draw,
                 grid, start, end)
-    
+
+def reset_button_pressed(draw, grid, start, end):
+    print('start pressed')
+    if start and end:
+        for row in grid:
+            for node in row:
+                node.update_neighbors(grid)
+
+        A_star(draw,
+                grid, start, end)
 
 
 start_button = thorpy.make_button("START")
-end_button = thorpy.Clickable("END")
+reset_button = thorpy.make_button("RESET")
 start_button.set_painter(rect_painter)
-end_button.set_painter(rect_painter)
+reset_button.set_painter(rect_painter)
 start_button.finish()
-end_button.finish()
-box = thorpy.Box(elements=[start_button, end_button])
+reset_button.finish()
+box = thorpy.Box(elements=[start_button, reset_button])
 thorpy.store(box, mode="h")
 box.fit_children()
 background = thorpy.Background()
@@ -210,15 +219,6 @@ def main(win, width):
                     end = None
 
             if event.type == pygame.KEYDOWN:
-                if start and end:
-
-                    for row in grid:
-                        for node in row:
-                            node.update_neighbors(grid)
-
-                    A_star(lambda: draw(win, grid, ROWS, width),
-                           grid, start, end)
-
                 if event.key == pygame.K_c:
                     start = None
                     end = None
@@ -227,8 +227,12 @@ def main(win, width):
 
         start_button.user_func = start_button_pressed
         draw_func = lambda: draw(win, grid, ROWS, width)
-        start_button.user_params = (draw_func,
-                        grid, start, end)
+        start_button.user_params = {"draw": draw_func,
+                        "grid": grid, "start": start, "end":end}
+        # start_button.user_func = start_button_pressed
+        # draw_func = lambda: draw(win, grid, ROWS, width)
+        # start_button.user_params = {"draw": draw_func,
+        #                 "grid": grid, "start": start, "end":end}
         menu.react(event)
 
 
