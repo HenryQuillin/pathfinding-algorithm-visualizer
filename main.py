@@ -1,6 +1,8 @@
 import pygame
 import math
 from queue import PriorityQueue
+
+from thorpy.elements.background import Background
 from node import Node
 import thorpy
 
@@ -14,7 +16,22 @@ rect_painter = thorpy.painters.roundrect.RoundRect(size=(50, 50),
                                                    color=(255, 255, 55),
                                                    radius=0.3)
 
-start_button = thorpy.Clickable("START")
+START_PRESSED = False
+
+
+def start_button_pressed(draw, grid, start, end):
+    print('start pressed')
+    if start and end:
+        for row in grid:
+            for node in row:
+                node.update_neighbors(grid)
+
+        A_star(draw,
+                grid, start, end)
+    
+
+
+start_button = thorpy.make_button("START")
 end_button = thorpy.Clickable("END")
 start_button.set_painter(rect_painter)
 end_button.set_painter(rect_painter)
@@ -23,8 +40,7 @@ end_button.finish()
 box = thorpy.Box(elements=[start_button, end_button])
 thorpy.store(box, mode="h")
 box.fit_children()
-
-
+background = thorpy.Background()
 
 # we regroup all elements on a menu, even if we do not launch the menu
 menu = thorpy.Menu(box)
@@ -37,7 +53,7 @@ EMPTY = (255, 255, 255)
 WALL = (0, 0, 0)
 PATH = (128, 0, 128)
 START = (255, 165, 0)
-GREY = (128, 128, 128)
+LINE = (70, 102, 255)
 GRID_LINE = (37, 150, 190)
 END = (64, 224, 208)
 
@@ -128,9 +144,9 @@ def draw_grid(win, rows, width):
     gap = width // rows
 
     for i in range(rows):
-        pygame.draw.line(win, GREY, (0, i * gap), (width, i * gap))
+        pygame.draw.line(win, LINE, (0, i * gap), (width, i * gap))
         for j in range(rows):
-            pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
+            pygame.draw.line(win, LINE, (j * gap, 0), (j * gap, width))
     draw_buttons()
 
 
@@ -180,7 +196,6 @@ def main(win, width):
                 elif not end and node != start:
                     end = node
                     end.type = END
-
                 elif node != end and node != start:
                     node.type = WALL
 
@@ -195,7 +210,8 @@ def main(win, width):
                     end = None
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and start and end:
+                if start and end:
+
                     for row in grid:
                         for node in row:
                             node.update_neighbors(grid)
@@ -207,7 +223,14 @@ def main(win, width):
                     start = None
                     end = None
                     grid = make_grid(ROWS, width)
-            menu.react(event)
+            
+
+        start_button.user_func = start_button_pressed
+        draw_func = lambda: draw(win, grid, ROWS, width)
+        start_button.user_params = (draw_func,
+                        grid, start, end)
+        menu.react(event)
+
 
     pygame.quit()
 
