@@ -187,28 +187,8 @@ def draw_gui(grid):
 
 def reset():
     store.start = None 
-    store.end = None 
-    grid = store.grid 
-    grid = []
-    gap = WIDTH // ROWS
-    for i in range(ROWS):
-        grid.append([])
-        for j in range(ROWS):
-            node = Node(i, j, gap, ROWS)
-            grid[i].append(node)
-
-    draw_gui(grid)
-
-    return grid
-    # store.start = None 
-    # store.end = None 
-    # print('reset') 
-    # for row in grid:
-    #     for node in row:
-    #        if node.y > GUI_HEIGHT:
-    #         node.type = EMPTY   
-    # store.grid = grid 
-    #return store.grid 
+    store.end = None
+    main(WIN, WIDTH)
 
 
 def main(win, width):
@@ -233,14 +213,14 @@ def main(win, width):
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, ROWS, width)
                 node = grid[row][col]
-                if not store.start and node != end and node.y > GUI_HEIGHT:
+                if not store.start and node != store.end and node.y > GUI_HEIGHT:
                     store.start = node
                     store.start.type = START
 
-                elif not end and node != store.start:
-                    end = node
-                    end.type = END
-                elif node != end and node != store.start:
+                elif not store.end and node != store.start:
+                    store.end = node
+                    store.end.type = END
+                elif node != store.end and node != store.start:
                     node.type = WALL
 
             elif pygame.mouse.get_pressed()[2]:  # RIGHT
@@ -251,20 +231,20 @@ def main(win, width):
                     node.type = EMPTY
                     if node == store.start:
                         store.start = None
-                    elif node == end:
-                        end = None
+                    elif node == store.end:
+                        store.end = None
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_c:
-                    store.start = None
-                    end = None
-                    grid = reset()
+            # if event.type == pygame.KEYDOWN:
+            #     if event.key == pygame.K_c:
+            #         store.start = None
+            #         store.end = None
+            #         grid = reset()
             
 
         start_button.user_func = start_button_pressed
         draw_func = lambda: draw(win, grid, ROWS, width)
         start_button.user_params = {"draw": draw_func,
-                        "grid": grid, "start": store.start, "end":end}
+                        "grid": grid, "start": store.start, "end":store.end}
         reset_button.user_func = reset
         #reset_button.user_params =
         menu.react(event)
