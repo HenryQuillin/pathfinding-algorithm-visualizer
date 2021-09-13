@@ -1,18 +1,19 @@
 import pygame
 from queue import PriorityQueue
+from store import Store
 
 
-CLOSED = (255, 0, 0)
-OPEN = (0, 255, 0)
+CLOSED = "#00F2DE"
+OPEN =  "#C1F200"#(64,224,208)
 BLUE = (64, 206, 227)
 YELLOW = (255, 255, 0)
 EMPTY = (255, 255, 255)
-WALL = (0, 0, 0)
-PATH = (128, 0, 128)
-START = (255, 165, 0)
-GREY = (128, 128, 128)
-GRID_LINE = (37, 150, 190)
-END = (64, 224, 208)
+WALL = "#103444"
+PATH = "#9900F2"
+START = "#F25400"
+LINE = (70, 102, 255)
+GRID_LINE = (176,220,252)
+END = "#F2007C"
 
 
 class Node:

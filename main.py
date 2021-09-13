@@ -1,22 +1,22 @@
 import pygame
-import math
 from queue import PriorityQueue
+from store import Store
 
 from thorpy.elements.background import Background
 from node import Node
 import thorpy
 
-CLOSED = (255, 0, 0)
-OPEN = (0, 255, 0)
+CLOSED = "#00F2DE"
+OPEN =  "#C1F200"#(64,224,208)
 BLUE = (64, 206, 227)
 YELLOW = (255, 255, 0)
 EMPTY = (255, 255, 255)
-WALL = (0, 0, 0)
-PATH = (128, 0, 128)
-START = (255, 165, 0)
+WALL = "#103444"
+PATH = "#9900F2"
+START = "#F25400"
 LINE = (70, 102, 255)
-GRID_LINE = (37, 150, 190)
-END = (64, 224, 208)
+GRID_LINE = (176,220,252)
+END = "#F2007C"
 
 pygame.init()
 
@@ -30,11 +30,7 @@ rect_painter = thorpy.painters.roundrect.RoundRect(size=(50, 50),
                                                    color=(255, 255, 55),
                                                    radius=0.3)
 
-class Store():
-    def __init__(self):
-        self.grid = []
-        self.start = None 
-        self.end = None 
+
 
 store = Store()
     
@@ -218,7 +214,6 @@ def reset():
 def main(win, width):
     grid = store.grid
     grid = make_grid(ROWS, width)
-    start = store.start
     end = store.end
 
 
@@ -238,14 +233,14 @@ def main(win, width):
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, ROWS, width)
                 node = grid[row][col]
-                if not start and node != end and node.y > GUI_HEIGHT:
-                    start = node
-                    start.type = START
+                if not store.start and node != end and node.y > GUI_HEIGHT:
+                    store.start = node
+                    store.start.type = START
 
-                elif not end and node != start:
+                elif not end and node != store.start:
                     end = node
                     end.type = END
-                elif node != end and node != start:
+                elif node != end and node != store.start:
                     node.type = WALL
 
             elif pygame.mouse.get_pressed()[2]:  # RIGHT
@@ -254,14 +249,14 @@ def main(win, width):
                 node = grid[row][col]
                 if node.y > GUI_HEIGHT:
                     node.type = EMPTY
-                    if node == start:
-                        start = None
+                    if node == store.start:
+                        store.start = None
                     elif node == end:
                         end = None
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_c:
-                    start = None
+                    store.start = None
                     end = None
                     grid = reset()
             
@@ -269,7 +264,7 @@ def main(win, width):
         start_button.user_func = start_button_pressed
         draw_func = lambda: draw(win, grid, ROWS, width)
         start_button.user_params = {"draw": draw_func,
-                        "grid": grid, "start": start, "end":end}
+                        "grid": grid, "start": store.start, "end":end}
         reset_button.user_func = reset
         #reset_button.user_params =
         menu.react(event)
