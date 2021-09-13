@@ -1,6 +1,7 @@
 import pygame
 from queue import PriorityQueue
 
+
 CLOSED = (255, 0, 0)
 OPEN = (0, 255, 0)
 BLUE = (64, 206, 227)

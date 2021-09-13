@@ -6,9 +6,23 @@ from thorpy.elements.background import Background
 from node import Node
 import thorpy
 
+CLOSED = (255, 0, 0)
+OPEN = (0, 255, 0)
+BLUE = (64, 206, 227)
+YELLOW = (255, 255, 0)
+EMPTY = (255, 255, 255)
+WALL = (0, 0, 0)
+PATH = (128, 0, 128)
+START = (255, 165, 0)
+LINE = (70, 102, 255)
+GRID_LINE = (37, 150, 190)
+END = (64, 224, 208)
+
 pygame.init()
 
+GUI_HEIGHT = 75
 WIDTH = 600
+ROWS = 30
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("A* Path Finding A_star")
 
@@ -16,8 +30,14 @@ rect_painter = thorpy.painters.roundrect.RoundRect(size=(50, 50),
                                                    color=(255, 255, 55),
                                                    radius=0.3)
 
-START_PRESSED = False
+class Store():
+    def __init__(self):
+        self.grid = []
+        self.start = None 
+        self.end = None 
 
+store = Store()
+    
 
 def start_button_pressed(draw, grid, start, end):
     print('start pressed')
@@ -29,15 +49,7 @@ def start_button_pressed(draw, grid, start, end):
         A_star(draw,
                 grid, start, end)
 
-def reset_button_pressed(draw, grid, start, end):
-    print('start pressed')
-    if start and end:
-        for row in grid:
-            for node in row:
-                node.update_neighbors(grid)
 
-        A_star(draw,
-                grid, start, end)
 
 
 start_button = thorpy.make_button("START")
@@ -54,17 +66,7 @@ background = thorpy.Background()
 # we regroup all elements on a menu, even if we do not launch the menu
 menu = thorpy.Menu(box)
 
-CLOSED = (255, 0, 0)
-OPEN = (0, 255, 0)
-BLUE = (64, 206, 227)
-YELLOW = (255, 255, 0)
-EMPTY = (255, 255, 255)
-WALL = (0, 0, 0)
-PATH = (128, 0, 128)
-START = (255, 165, 0)
-LINE = (70, 102, 255)
-GRID_LINE = (37, 150, 190)
-END = (64, 224, 208)
+
 
 
 def h_score(p1, p2):
@@ -144,7 +146,7 @@ def draw_buttons():
     for element in menu.get_population():
         element.surface = WIN
         # use the elements normally...
-        box.center()
+        box.center(None,-260)
         box.blit()
         box.update()
 
@@ -179,17 +181,55 @@ def get_clicked_pos(pos, rows, width):
 
     return row, col
 
+def draw_gui(grid):
+
+    for row in grid:
+        for node in row:
+            if node.y < GUI_HEIGHT:
+              node.type = WALL    
+    pygame.display.update()
+
+def reset():
+    store.start = None 
+    store.end = None 
+    grid = store.grid 
+    grid = []
+    gap = WIDTH // ROWS
+    for i in range(ROWS):
+        grid.append([])
+        for j in range(ROWS):
+            node = Node(i, j, gap, ROWS)
+            grid[i].append(node)
+
+    draw_gui(grid)
+
+    return grid
+    # store.start = None 
+    # store.end = None 
+    # print('reset') 
+    # for row in grid:
+    #     for node in row:
+    #        if node.y > GUI_HEIGHT:
+    #         node.type = EMPTY   
+    # store.grid = grid 
+    #return store.grid 
+
 
 def main(win, width):
-    ROWS = 30
+    grid = store.grid
     grid = make_grid(ROWS, width)
+    start = store.start
+    end = store.end
 
-    start = None
-    end = None
 
     run = True
+    draw_gui(grid)
+
     while run:
+
+        
         draw(win, grid, ROWS, width)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -198,7 +238,7 @@ def main(win, width):
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, ROWS, width)
                 node = grid[row][col]
-                if not start and node != end:
+                if not start and node != end and node.y > GUI_HEIGHT:
                     start = node
                     start.type = START
 
@@ -212,27 +252,26 @@ def main(win, width):
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, ROWS, width)
                 node = grid[row][col]
-                node.type = EMPTY
-                if node == start:
-                    start = None
-                elif node == end:
-                    end = None
+                if node.y > GUI_HEIGHT:
+                    node.type = EMPTY
+                    if node == start:
+                        start = None
+                    elif node == end:
+                        end = None
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_c:
                     start = None
                     end = None
-                    grid = make_grid(ROWS, width)
+                    grid = reset()
             
 
         start_button.user_func = start_button_pressed
         draw_func = lambda: draw(win, grid, ROWS, width)
         start_button.user_params = {"draw": draw_func,
                         "grid": grid, "start": start, "end":end}
-        # start_button.user_func = start_button_pressed
-        # draw_func = lambda: draw(win, grid, ROWS, width)
-        # start_button.user_params = {"draw": draw_func,
-        #                 "grid": grid, "start": start, "end":end}
+        reset_button.user_func = reset
+        #reset_button.user_params =
         menu.react(event)
 
 
