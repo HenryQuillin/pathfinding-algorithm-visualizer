@@ -3,3 +3,5 @@ class Store():
         self.grid = []
         self.start = None 
         self.end = None 
+        self.heuristic_toggled = False 
+        self.count = 0

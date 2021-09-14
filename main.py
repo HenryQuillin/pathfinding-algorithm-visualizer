@@ -50,17 +50,26 @@ def start_button_pressed(draw, grid, start, end):
 
 start_button = thorpy.make_button("START")
 reset_button = thorpy.make_button("RESET")
+
+heuristic_button = [thorpy.Togglable("Heuristic"+str(i)) for i in range(2)]
+heuristic_button_pool = thorpy.TogglablePool(heuristic_button, first_value=heuristic_button[0],
+                                                        always_value=False)
+
+heuristic_checkbox = thorpy.CheckBox("Visualize Heuristic", type_="checkbox")
 start_button.set_painter(rect_painter)
+heuristic_checkbox.set_painter(rect_painter)
 reset_button.set_painter(rect_painter)
+heuristic_checkbox.finish()
 start_button.finish()
 reset_button.finish()
-box = thorpy.Box(elements=[start_button, reset_button])
+box = thorpy.Box(elements=[start_button, reset_button, heuristic_checkbox])
+box2 = thorpy.Box(elements=[heuristic_checkbox])
 thorpy.store(box, mode="h")
 box.fit_children()
 background = thorpy.Background()
 
 # we regroup all elements on a menu, even if we do not launch the menu
-menu = thorpy.Menu(box)
+menu = thorpy.Menu([box,box2])
 
 
 
@@ -74,8 +83,23 @@ def h_score(p1, p2):
 def reconstruct_path(came_from, current, draw):
     while current in came_from:
         current = came_from[current]
-        current.type = PATH
+        if current.type is not START and current.type is not END:
+            current.type = PATH 
         draw()
+
+def draw_heuristic(node):
+    if store.heuristic_toggled:
+        pygame.draw.line(WIN, "#F2007C", (store.start.x, store.start.y), (node.x, node.y))
+        pygame.draw.line(WIN, "#9900F2", (node.x, node.y),(store.end.x, store.end.y))
+        pygame.display.update()
+
+def heuristic_checkbox_toggled():
+    print('heuristic funciton called')
+    store.count = store.count + 1 
+    if (store.count % 2) == 1: # count is odd
+        store.heuristic_toggled = True 
+    if (store.count % 2) == 0: # count is even
+        store.heuristic_toggled = False 
 
 
 def A_star(draw, grid, start, end):
@@ -116,6 +140,7 @@ def A_star(draw, grid, start, end):
                     open_set.put((f_score[neighbor], count, neighbor))
                     open_set_hash.add(neighbor)
                     neighbor.type = OPEN
+                    draw_heuristic(neighbor)
 
         draw()
 
@@ -143,9 +168,12 @@ def draw_buttons():
         element.surface = WIN
         # use the elements normally...
         box.center(None,-260)
+
         box.blit()
         box.update()
-
+        # heuristic_button_pool.center(100,-260)
+        # heuristic_button_pool.blit()
+        # heuristic_button_pool.update()
 
 def draw_grid(win, rows, width):
     gap = width // rows
@@ -217,10 +245,10 @@ def main(win, width):
                     store.start = node
                     store.start.type = START
 
-                elif not store.end and node != store.start:
+                elif not store.end and node != store.start and node.y > GUI_HEIGHT:
                     store.end = node
                     store.end.type = END
-                elif node != store.end and node != store.start:
+                elif node != store.end and node != store.start and node.y > GUI_HEIGHT:
                     node.type = WALL
 
             elif pygame.mouse.get_pressed()[2]:  # RIGHT
@@ -246,7 +274,8 @@ def main(win, width):
         start_button.user_params = {"draw": draw_func,
                         "grid": grid, "start": store.start, "end":store.end}
         reset_button.user_func = reset
-        #reset_button.user_params =
+        heuristic_checkbox.user_func = heuristic_checkbox_toggled
+        # heuristic_checkbox.user_params = heuristic_checkbox.get_state()
         menu.react(event)
 
 
