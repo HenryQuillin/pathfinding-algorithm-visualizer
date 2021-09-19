@@ -24,23 +24,58 @@ END = "#F2007C"
 
 pygame.init()
 
-GUI_HEIGHT = 75
-WIDTH = 600
-ROWS = 30
+
+WIDTH = 800
+ROWS = 40
+BLACK_NODE_HEIGHT = 75
+UI_HEIGHT = 90
+UI_LENGTH = WIDTH + 7
+UI_BUTTON_HEIGHT = 50
+UI_PANEL_MIDPOINT = UI_LENGTH / 2
+UI_BUTTON_Y_POS = UI_HEIGHT/2 - UI_BUTTON_HEIGHT/2
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
-pygame.display.set_caption("A* Path Finding A_star")
+SMALL_BTN_LENGTH = 100
+LARGE_BTN_LENGTH = 150
+GAP = 0
+
+pygame.display.set_caption("Pathfinding Algorithm Visualizer")
 
 manager = pygame_gui.UIManager((800, 600))
 clock = pygame.time.Clock()
-
-start_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2 -100, 15), (100, 50)),
-                                             text='START',
-                                             manager=manager)
-clear_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, 15), (100, 50)),
-                                             text='END',
-                                             manager=manager)
-
 store = Store()
+
+ui_panel = pygame_gui.elements.ui_panel.UIPanel(relative_rect=pygame.Rect((-5, -5), (UI_LENGTH, UI_HEIGHT)),
+                                                starting_layer_height=1,
+                                                manager=manager)
+analytics_panel = pygame_gui.elements.ui_panel.UIPanel(relative_rect=pygame.Rect((UI_PANEL_MIDPOINT-(LARGE_BTN_LENGTH/2)+300, UI_HEIGHT-12), (175, 300)),
+                                                starting_layer_height=2,
+                                                manager=manager)
+start_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((UI_PANEL_MIDPOINT-(SMALL_BTN_LENGTH/2)-50, UI_BUTTON_Y_POS), (SMALL_BTN_LENGTH, UI_BUTTON_HEIGHT)),
+                                            text='START',
+                                            manager=manager,
+                                            container=ui_panel)
+clear_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((UI_PANEL_MIDPOINT-(SMALL_BTN_LENGTH/2)+50, UI_BUTTON_Y_POS), (SMALL_BTN_LENGTH, UI_BUTTON_HEIGHT)),
+                                            text='CLEAR',
+                                            manager=manager,
+                                            container=ui_panel)
+algorithm_dropdown = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rect((UI_PANEL_MIDPOINT-(LARGE_BTN_LENGTH/2)-200, UI_BUTTON_Y_POS-2), (150, UI_BUTTON_HEIGHT)),
+                                                        options_list=[
+                                                            "A Star", "Breadth FS"],
+                                                        starting_option="A Star",
+                                                        manager=manager,
+                                                        )
+heuristic_dropdown = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rect((UI_PANEL_MIDPOINT-(LARGE_BTN_LENGTH/2)+200, UI_BUTTON_Y_POS-2), (150, UI_BUTTON_HEIGHT)),
+                                                        options_list=[
+                                                            "Show Heuristic", "Hide Heuristic"],
+                                                        starting_option="Show Heuristic",
+                                                        manager=manager,
+                                                        )
+analytics_text_box = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect((0,0), (175, 300)),
+                                                   manager=manager, container=analytics_panel,
+
+                                                   html_text=""" <strong><u><font color=’#F25400’ size=3.5>Analytics</font></u></strong>"""
+                                                   
+                                                   )
 
 
 def start_button_pressed(draw, grid, store):
@@ -49,14 +84,16 @@ def start_button_pressed(draw, grid, store):
         for row in grid:
             for node in row:
                 node.update_neighbors(grid)
-
-        algorithms.BFS(WIN, draw,
-            grid, store.start, store.end, store)
-
+        if store.algorithm_selected == "A Star":
+            algorithms.A_star(WIN, draw,
+                              grid, store.start, store.end, store)
+        if store.algorithm_selected == "BFS":
+            algorithms.BFS(WIN, draw,
+                           grid, store.start, store.end, store)
 
 
 CLOSED = "#00F2DE"
-OPEN = "#C1F200"  
+OPEN = "#C1F200"
 BLUE = (64, 206, 227)
 YELLOW = (255, 255, 0)
 EMPTY = (255, 255, 255)
@@ -66,6 +103,7 @@ START = "#F25400"
 LINE = (70, 102, 255)
 GRID_LINE = (176, 220, 252)
 END = "#F2007C"
+
 
 def heuristic_checkbox_toggled():
     print('heuristic funciton called')
@@ -129,7 +167,7 @@ def draw_gui(grid):
 
     for row in grid:
         for node in row:
-            if node.y < GUI_HEIGHT:
+            if node.y < BLACK_NODE_HEIGHT:
                 node.type = WALL
     pygame.display.update()
 
@@ -146,64 +184,76 @@ def main(win, width):
     end = store.end
     def draw_func(): return draw(win, grid, ROWS, width)
     run = True
+    UI_button_hovered = False
     draw_gui(grid)
 
     while run:
         time_delta = clock.tick(60)/1000.0
 
-
         draw(win, grid, ROWS, width)
-        
+
         for event in pygame.event.get():
             time_delta = clock.tick(60)/1000.0
 
             if event.type == pygame.QUIT:
-                run = False 
+                run = False
                 pygame.quit()
+            elif event.type == pygame.USEREVENT:
+                if event.user_type == pygame_gui.UI_BUTTON_ON_HOVERED:
+                    UI_button_hovered = True
+                if event.user_type == pygame_gui.UI_BUTTON_ON_UNHOVERED:
+                    UI_button_hovered = False
 
-            if pygame.mouse.get_pressed()[0]:  # LEFT
-                pos = pygame.mouse.get_pos()
-                row, col = get_clicked_pos(pos, ROWS, width)
-                node = grid[row][col]
-                if not store.start and node != store.end and node.y > GUI_HEIGHT:
-                    store.start = node
-                    store.start.type = START
-
-                elif not store.end and node != store.start and node.y > GUI_HEIGHT:
-                    store.end = node
-                    store.end.type = END
-                elif node != store.end and node != store.start and node.y > GUI_HEIGHT:
-                    node.type = WALL
-
-            if pygame.mouse.get_pressed()[2]:  # RIGHT
-                pos = pygame.mouse.get_pos()
-                row, col = get_clicked_pos(pos, ROWS, width)
-                node = grid[row][col]
-                if node.y > GUI_HEIGHT:
-                    node.type = EMPTY
-                    if node == store.start:
-                        store.start = None
-                    elif node == store.end:
-                        store.end = None
-                        
-            if event.type == pygame.USEREVENT:
-                if event.user_type == pygame_gui.UI_BUTTON_PRESSED: #START BUTTON 
+                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:  # START BUTTON
                     if event.ui_element == start_button:
                         start_button_pressed(draw_func, grid, store)
-                    if event.ui_element == clear_button:
+                        analytics_text_box.html_text = analytics_text_box.html_text + '<font color=’#F25400’ size=3.5><br> {2} <br> Nodes Searched: {0} <br> Nodes Seen: {1}<br></font>'.format(algorithms.nodes_searched,algorithms.nodes_seen, store.algorithm_selected)
+                        analytics_text_box.rebuild()
+                    if event.ui_element == clear_button:   # Clear button
                         reset()
-                if event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED: 
+                if event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:  # drop down
                     if event.ui_element == algorithm_dropdown:
                         if event.text == "A Star":
-                            pass 
-                        if event.text == "Best First Search":
-                            pass 
-                    if event.ui_element == heuristic_dropdown:
-                        pass
+                            store.algorithm_selected = "A Star"
+                            heuristic_dropdown.show()
+                        if event.text == "Breadth FS":
+                            store.algorithm_selected = "BFS"
+                            heuristic_dropdown.hide()
 
-                
-                
+                    elif event.ui_element == heuristic_dropdown:
+                        if event.text == "Show Heuristic":
+                            store.heuristic_toggled = True
+                            print(store.algorithm_selected)
+                        if event.text == "Hide Heuristic":
+                            store.heuristic_toggled = False
 
+            elif pygame.mouse.get_pressed()[0]:  # LEFT
+                if UI_button_hovered == False:
+                    pos = pygame.mouse.get_pos()
+                    row, col = get_clicked_pos(pos, ROWS, width)
+                    node = grid[row][col]
+                    if not store.start and node != store.end and node.y > BLACK_NODE_HEIGHT:
+                        store.start = node
+                        store.start.type = START
+
+                    elif not store.end and node != store.start and node.y > BLACK_NODE_HEIGHT:
+                        store.end = node
+                        store.end.type = END
+                    elif node != store.end and node != store.start and node.y > BLACK_NODE_HEIGHT:
+                        node.type = WALL
+
+            elif pygame.mouse.get_pressed()[2]:  # RIGHT
+                if UI_button_hovered == False:
+
+                    pos = pygame.mouse.get_pos()
+                    row, col = get_clicked_pos(pos, ROWS, width)
+                    node = grid[row][col]
+                    if node.y > BLACK_NODE_HEIGHT:
+                        node.type = EMPTY
+                        if node == store.start:
+                            store.start = None
+                        elif node == store.end:
+                            store.end = None
 
             manager.process_events(event)
 
@@ -216,8 +266,6 @@ def main(win, width):
         # heuristic_checkbox.user_func = heuristic_checkbox_toggled
         # # heuristic_checkbox.user_params = heuristic_checkbox.get_state()
         # menu.react(event)
-
-
 
     pygame.quit()
 
