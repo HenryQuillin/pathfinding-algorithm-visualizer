@@ -16,7 +16,8 @@ START = "#F25400"
 LINE = (70, 102, 255)
 GRID_LINE = (176, 220, 252)
 END = "#F2007C"
-
+nodes_searched = ""
+nodes_seen = ""
 def h_score(p1, p2):
     x1, y1 = p1
     x2, y2 = p2
@@ -32,6 +33,7 @@ def draw_heuristic(win, node, store):
 
 
 def A_star(win, draw, grid, start, end, store):
+    global nodes_searched,nodes_seen
     count = 0
     open_set = queue.PriorityQueue()
     open_set.put((0, count, start))
@@ -40,6 +42,8 @@ def A_star(win, draw, grid, start, end, store):
     g_score[start] = 0
     f_score = {node: float("inf") for row in grid for node in row}
     f_score[start] = h_score(start.get_pos(), end.get_pos())
+    nodes_searched = 0
+    nodes_seen = 0
 
     open_set_hash = {start}
 
@@ -70,20 +74,25 @@ def A_star(win, draw, grid, start, end, store):
                     open_set_hash.add(neighbor)
                     neighbor.type = OPEN
                     draw_heuristic(win,neighbor, store)
+                    nodes_searched += 1
 
         draw()
 
         if current != start:
             current.type = CLOSED
+            nodes_seen += 1
 
     return False
 
 
-def BFS(win,draw, grid, start, end, store):
+def BFS(win, draw, grid, start, end, store):
+    global nodes_searched,nodes_seen
     count = 0
     open_set = queue.Queue()
     open_set.put((count, start))
     came_from = {}
+    nodes_searched = 0
+    nodes_seen = 0
 
     open_set_hash = {start}
 
@@ -98,6 +107,7 @@ def BFS(win,draw, grid, start, end, store):
         if current == end:
             reconstruct_path(came_from, end, draw, start)
             end.type = END
+
             return True
 
         for neighbor in current.neighbors:
@@ -108,18 +118,27 @@ def BFS(win,draw, grid, start, end, store):
                 open_set.put((count, neighbor))
                 open_set_hash.add(neighbor)
                 neighbor.type = OPEN
+                nodes_searched += 1
 
         draw()
 
         if current != start:
             current.type = CLOSED
+            nodes_seen += 1
+
 
     return False
 
 
+
 def reconstruct_path(came_from, current, draw, start):
+    global nodes_searched, nodes_seen
     while current in came_from:
         current = came_from[current]
         if current is not start:
             current.type = PATH
         draw()
+    print(nodes_searched)
+    print(nodes_seen)
+    nodes_searched = nodes_searched
+
