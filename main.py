@@ -1,11 +1,11 @@
+from pygame.event import clear
 import main
 import queue
 import pygame
 import algorithms
+import pygame_gui
 
-from thorpy.elements.background import Background
 from node import Node
-import thorpy
 #from A_Star import A_star
 from store import Store
 
@@ -30,29 +30,33 @@ ROWS = 30
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("A* Path Finding A_star")
 
-rect_painter = thorpy.painters.roundrect.RoundRect(size=(50, 50),
-                                                   color=(255, 255, 55),
-                                                   radius=0.3)
+manager = pygame_gui.UIManager((800, 600))
+clock = pygame.time.Clock()
 
+start_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2 -100, 15), (100, 50)),
+                                             text='START',
+                                             manager=manager)
+clear_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((WIDTH/2, 15), (100, 50)),
+                                             text='END',
+                                             manager=manager)
 
 store = Store()
 
 
-def start_button_pressed(draw, grid, start, end):
+def start_button_pressed(draw, grid, store):
     print('start pressed')
-    if start and end:
+    if store.start and store.end:
         for row in grid:
             for node in row:
                 node.update_neighbors(grid)
 
         algorithms.BFS(WIN, draw,
-            grid, start, end, store)
-        # BFS(draw,
-        #         grid, start, end)
+            grid, store.start, store.end, store)
+
 
 
 CLOSED = "#00F2DE"
-OPEN = "#C1F200"  # (64,224,208)
+OPEN = "#C1F200"  
 BLUE = (64, 206, 227)
 YELLOW = (255, 255, 0)
 EMPTY = (255, 255, 255)
@@ -62,37 +66,6 @@ START = "#F25400"
 LINE = (70, 102, 255)
 GRID_LINE = (176, 220, 252)
 END = "#F2007C"
-
-
-start_button = thorpy.make_button("START")
-reset_button = thorpy.make_button("RESET")
-
-heuristic_button = [thorpy.Togglable("Heuristic"+str(i)) for i in range(2)]
-heuristic_button_pool = thorpy.TogglablePool(heuristic_button, first_value=heuristic_button[0],
-                                             always_value=False)
-
-heuristic_checkbox = thorpy.CheckBox(
-    "Visualize Heuristic", type_="checkbox", value=True)
-start_button.set_painter(rect_painter)
-heuristic_checkbox.set_painter(rect_painter)
-reset_button.set_painter(rect_painter)
-heuristic_checkbox.finish()
-start_button.finish()
-reset_button.finish()
-box = thorpy.Box(elements=[start_button, reset_button, heuristic_checkbox])
-#box2 = thorpy.Box(elements=[heuristic_checkbox])
-thorpy.store(box, mode="h")
-box.fit_children()
-background = thorpy.Background()
-
-# we regroup all elements on a menu, even if we do not launch the menu
-menu = thorpy.Menu([box])
-
-
-
-
-
-
 
 def heuristic_checkbox_toggled():
     print('heuristic funciton called')
@@ -116,17 +89,7 @@ def make_grid(rows, width):
 
 
 def draw_buttons():
-    # important : set the screen as surface for all elements
-    for element in menu.get_population():
-        element.surface = WIN
-        # use the elements normally...
-        box.center(None, -260)
-
-        box.blit()
-        box.update()
-        # heuristic_button_pool.center(100,-260)
-        # heuristic_button_pool.blit()
-        # heuristic_button_pool.update()
+    pass
 
 
 def draw_grid(win, rows, width):
@@ -147,6 +110,8 @@ def draw(win, grid, rows, width):
             node.draw(win)
 
     draw_grid(win, rows, width)
+    manager.draw_ui(WIN)
+
     pygame.display.update()
 
 
@@ -179,17 +144,22 @@ def main(win, width):
     grid = store.grid
     grid = make_grid(ROWS, width)
     end = store.end
-
+    def draw_func(): return draw(win, grid, ROWS, width)
     run = True
     draw_gui(grid)
 
     while run:
+        time_delta = clock.tick(60)/1000.0
+
 
         draw(win, grid, ROWS, width)
-
+        
         for event in pygame.event.get():
+            time_delta = clock.tick(60)/1000.0
+
             if event.type == pygame.QUIT:
-                run = False
+                run = False 
+                pygame.quit()
 
             if pygame.mouse.get_pressed()[0]:  # LEFT
                 pos = pygame.mouse.get_pos()
@@ -205,7 +175,7 @@ def main(win, width):
                 elif node != store.end and node != store.start and node.y > GUI_HEIGHT:
                     node.type = WALL
 
-            elif pygame.mouse.get_pressed()[2]:  # RIGHT
+            if pygame.mouse.get_pressed()[2]:  # RIGHT
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, ROWS, width)
                 node = grid[row][col]
@@ -215,21 +185,39 @@ def main(win, width):
                         store.start = None
                     elif node == store.end:
                         store.end = None
+                        
+            if event.type == pygame.USEREVENT:
+                if event.user_type == pygame_gui.UI_BUTTON_PRESSED: #START BUTTON 
+                    if event.ui_element == start_button:
+                        start_button_pressed(draw_func, grid, store)
+                    if event.ui_element == clear_button:
+                        reset()
+                if event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED: 
+                    if event.ui_element == algorithm_dropdown:
+                        if event.text == "A Star":
+                            pass 
+                        if event.text == "Best First Search":
+                            pass 
+                    if event.ui_element == heuristic_dropdown:
+                        pass
 
-            # if event.type == pygame.KEYDOWN:
-            #     if event.key == pygame.K_c:
-            #         store.start = None
-            #         store.end = None
-            #         grid = reset()
+                
+                
 
-        start_button.user_func = start_button_pressed
-        def draw_func(): return draw(win, grid, ROWS, width)
-        start_button.user_params = {"draw": draw_func,
-                                    "grid": grid, "start": store.start, "end": store.end}
-        reset_button.user_func = reset
-        heuristic_checkbox.user_func = heuristic_checkbox_toggled
-        # heuristic_checkbox.user_params = heuristic_checkbox.get_state()
-        menu.react(event)
+
+            manager.process_events(event)
+
+        manager.update(time_delta)
+        # start_button.user_func = start_button_pressed
+        # def draw_func(): return draw(win, grid, ROWS, width)
+        # start_button.user_params = {"draw": draw_func,
+        #                             "grid": grid, "start": store.start, "end": store.end}
+        # reset_button.user_func = reset
+        # heuristic_checkbox.user_func = heuristic_checkbox_toggled
+        # # heuristic_checkbox.user_params = heuristic_checkbox.get_state()
+        # menu.react(event)
+
+
 
     pygame.quit()
 

@@ -79,7 +79,7 @@ def A_star(win, draw, grid, start, end, store):
     return False
 
 
-def BFS(win,draw, grid, start, end, store):
+def BFS(win, draw, grid, start, end, store):
     count = 0
     open_set = queue.Queue()
     open_set.put((count, start))
