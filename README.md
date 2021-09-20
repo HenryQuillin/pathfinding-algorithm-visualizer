@@ -14,7 +14,7 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#Gameplay">Gameplay</a></li>
+    <li><a href="#usage">Usage Examples</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
@@ -58,12 +58,12 @@ To get a local copy up and running follow these simple steps.
 
 
 <!-- USAGE EXAMPLES -->
-## Gameplay
-![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/Z1AvGu5.png)
-![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/5q6LlzB.png)
-![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/7mefTaO.png)
-![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/Hjc8Rg4.png)
-![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/ZWySOAJ.png)
+## Usage 
+![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/GcsEVgL.png)
+![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/CP0rFlM.png)
+![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/iL4OOQc.png)
+![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/byyHQbQ.png)
+![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/qJzUMnv.png)
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -88,19 +88,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Henry Quillin - [Linkedin](https://www.linkedin.com/in/henry-quillin-014919204/) - henryquillin@gmail.com
+Henry Quillin - [Personal Website](https://henryquillin.github.io) - [Linkedin](https://www.linkedin.com/in/henry-quillin-014919204/) - henryquillin@gmail.com
 
-Project Link: [https://github.com/github_username/PONG-with-a-twist](https://github.com/github_username/PONG-with-a-twist)
-
-
-
-<!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-
-* Thanks to [@AsherForman](https://github.com/AsherForman) for contributing
-
-
-
+Project Link: [https://github.com/github_username/PONG-with-a-twist](https://github.com/HenryQuillin/pathfinding-algorithm-visualizer)
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
