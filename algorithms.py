@@ -83,6 +83,59 @@ def A_star(win, draw, grid, start, end, store):
             nodes_seen += 1
 
     return False
+    
+def Best_FS(win, draw, grid, start, end, store):
+    global nodes_searched,nodes_seen
+    count = 0
+    open_set = queue.PriorityQueue()
+    open_set.put((0, count, start))
+    came_from = {}
+    g_score = {node: float("inf") for row in grid for node in row}
+    g_score[start] = 0
+    f_score = {node: float("inf") for row in grid for node in row}
+    f_score[start] = h_score(start.get_pos(), end.get_pos())
+    nodes_searched = 0
+    nodes_seen = 0
+
+    open_set_hash = {start}
+
+    while not open_set.empty():
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+        current = open_set.get()[2]
+        open_set_hash.remove(current)
+
+        if current == end:
+            reconstruct_path(came_from, end, draw, start)
+            end.type = END
+            return True
+
+        for neighbor in current.neighbors:
+            temp_g_score = g_score[current] + 1
+
+            if temp_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = temp_g_score
+                f_score[neighbor] = h_score(neighbor.get_pos(), end.get_pos())
+                if neighbor not in open_set_hash:
+                    came_from[neighbor] = current
+                    count += 1
+                    f_score[neighbor] = h_score(neighbor.get_pos(), end.get_pos())
+                    open_set.put((f_score[neighbor], count, neighbor))
+                    open_set_hash.add(neighbor)
+                    neighbor.type = OPEN
+                    draw_heuristic(win, neighbor, store)
+                    nodes_searched += 1
+
+        draw()
+
+        if current != start:
+            current.type = CLOSED
+            nodes_seen += 1
+
+    return False
 
 
 def BFS(win, draw, grid, start, end, store):
