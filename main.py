@@ -60,7 +60,7 @@ clear_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((UI_PANEL_
                                             container=ui_panel)
 algorithm_dropdown = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rect((UI_PANEL_MIDPOINT-(LARGE_BTN_LENGTH/2)-200, UI_BUTTON_Y_POS-2), (150, UI_BUTTON_HEIGHT)),
                                                         options_list=[
-                                                            "A Star", "Breadth FS"],
+                                                            "A Star", "Breadth FS", "Best FS"],
                                                         starting_option="A Star",
                                                         manager=manager,
                                                         )
@@ -80,6 +80,7 @@ analytics_text_box = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect((0,
 
 def start_button_pressed(draw, grid, store):
     print('start pressed')
+    # clear_path(WIN, grid, ROWS, WIDTH)
     if store.start and store.end:
         for row in grid:
             for node in row:
@@ -89,6 +90,9 @@ def start_button_pressed(draw, grid, store):
                               grid, store.start, store.end, store)
         if store.algorithm_selected == "BFS":
             algorithms.BFS(WIN, draw,
+                           grid, store.start, store.end, store)
+        if store.algorithm_selected == "Best FS":
+            algorithms.Best_FS(WIN, draw,
                            grid, store.start, store.end, store)
 
 
@@ -152,6 +156,17 @@ def draw(win, grid, rows, width):
 
     pygame.display.update()
 
+# def clear_path(win, grid, rows, width):
+
+#     for row in grid:
+#         for node in row:
+#             if node.type is not START and node.type is not END and node.type is not WALL:
+#                 node.type = EMPTY
+#                 node.draw(win)
+
+
+#     pygame.display.update()
+
 
 def get_clicked_pos(pos, rows, width):
     gap = width // rows
@@ -204,8 +219,8 @@ def main(win, width):
                 if event.user_type == pygame_gui.UI_BUTTON_ON_UNHOVERED:
                     UI_button_hovered = False
 
-                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:  # START BUTTON
-                    if event.ui_element == start_button:
+                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:  
+                    if event.ui_element == start_button: # START BUTTON
                         start_button_pressed(draw_func, grid, store)
                         analytics_text_box.html_text = analytics_text_box.html_text + '<font color=’#F25400’ size=3.5><br> {2} <br> Nodes Searched: {0} <br> Nodes Seen: {1}<br></font>'.format(algorithms.nodes_searched,algorithms.nodes_seen, store.algorithm_selected)
                         analytics_text_box.rebuild()
@@ -219,6 +234,9 @@ def main(win, width):
                         if event.text == "Breadth FS":
                             store.algorithm_selected = "BFS"
                             heuristic_dropdown.hide()
+                        if event.text == "Best FS":
+                            store.algorithm_selected = "Best FS"
+                            heuristic_dropdown.show()
 
                     elif event.ui_element == heuristic_dropdown:
                         if event.text == "Show Heuristic":
