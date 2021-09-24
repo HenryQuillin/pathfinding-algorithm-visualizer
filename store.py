@@ -7,3 +7,5 @@ class Store():
         self.count = 0
         self.algorithm_selected = "A Star"
         self.analytics = ""
+        self.run = True
+        self.step_mode_toggled = False 
