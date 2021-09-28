@@ -8,4 +8,6 @@ class Store():
         self.algorithm_selected = "A Star"
         self.analytics = ""
         self.run = True
-        self.step_mode_toggled = False 
+        self.step_mode_toggled = False
+        self.slider_val = 0
+        self.finish = False 

@@ -3,6 +3,7 @@ import pygame
 import queue 
 import main
 import store
+import time 
 
 
 CLOSED = "#00F2DE"
@@ -38,6 +39,7 @@ def draw_heuristic(win, node, store):
 
 
 def A_star(win, draw, grid, start, end, store):
+    
     global nodes_searched,nodes_seen
     count = 0
     open_set = queue.PriorityQueue()
@@ -52,16 +54,21 @@ def A_star(win, draw, grid, start, end, store):
 
     open_set_hash = {start}
     while not open_set.empty():
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if store.step_mode_toggled == True: 
+            if store.step_mode_toggled == True or store.slider_val > 0: 
                 if event.type == pygame.KEYDOWN:  
                     if event.key == pygame.K_RETURN:
                         store.run = True  
                 if event.type == pygame.KEYDOWN:  
                     if event.key == pygame.K_RIGHT: 
+                        print('right pressed')
                         store.step_mode_toggled = False  
+                        store.finish = True  
+        if store.finish == False:
+           time.sleep(store.slider_val)
         if store.run == True or store.step_mode_toggled == False:
             current = open_set.get()[2]
             open_set_hash.remove(current)
@@ -116,16 +123,22 @@ def Best_FS(win, draw, grid, start, end, store):
     open_set_hash = {start}
 
     while not open_set.empty():
+
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if store.step_mode_toggled == True: 
+            if store.step_mode_toggled == True or store.slider_val > 0: 
                 if event.type == pygame.KEYDOWN:  
                     if event.key == pygame.K_RETURN:
                         store.run = True  
                 if event.type == pygame.KEYDOWN:  
                     if event.key == pygame.K_RIGHT: 
+                        print('right pressed')
                         store.step_mode_toggled = False  
+                        store.finish = True  
+        if store.finish == False:
+           time.sleep(store.slider_val)
 
         if store.run == True or store.step_mode_toggled == False:
             current = open_set.get()[2]
@@ -181,13 +194,17 @@ def BFS(win, draw, grid, start, end, store):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if store.step_mode_toggled == True: 
+            if store.step_mode_toggled == True or store.slider_val > 0: 
                 if event.type == pygame.KEYDOWN:  
                     if event.key == pygame.K_RETURN:
                         store.run = True  
                 if event.type == pygame.KEYDOWN:  
                     if event.key == pygame.K_RIGHT: 
+                        print('right pressed')
                         store.step_mode_toggled = False  
+                        store.finish = True  
+        if store.finish == False:
+           time.sleep(store.slider_val) 
 
         if store.run == True or store.step_mode_toggled == False:
             current = open_set.get()[1]

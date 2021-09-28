@@ -40,7 +40,7 @@ GAP = 0
 
 pygame.display.set_caption("Pathfinding Algorithm Visualizer")
 
-manager = pygame_gui.UIManager((800, 600))
+manager = pygame_gui.UIManager((800, 600), 'theme.json')
 clock = pygame.time.Clock()
 store = Store()
 
@@ -71,7 +71,7 @@ heuristic_dropdown = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rec
                                                         starting_option="Show Heuristic",
                                                         manager=manager,
                                                         )
-step_mode_dropdown = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rect((0,300), (150, 50)),
+step_mode_dropdown = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rect((10,300), (150, 50)),
                                                         options_list=[
                                                             "NORMAL MODE","STEP MODE"],
                                                         starting_option="NORMAL MODE",
@@ -81,9 +81,10 @@ step_mode_dropdown = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rec
 analytics_text_box = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect((0,0), (175, 300)),
                                                    manager=manager, container=analytics_panel,
 
-                                                   html_text=""" <strong><u><font color=’#F25400’ size=3.5>Analytics</font></u></strong>"""
+                                                   html_text=""" <strong><u>Analytics</></u></strong>"""
                                                    
                                                    )
+
 step_mode_text_box = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0,350,180, 25),
                                                    manager=manager, container=analytics_panel,
                                                    text="""WHILE IN STEP MODE"""
@@ -96,13 +97,20 @@ step_mode_text_box3 = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0,3
                                                    manager=manager, container=analytics_panel,
                                                    text="""press -> to skip"""
                                                    )
+slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect((-5,420), (180, 25)),
+                                                   manager=manager, container=analytics_panel,
+                                                   start_value=0,value_range=(.3,0)                                                   
+                                                   )
+slider_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0,445), (180, 25)),
+                                                   manager=manager, container=analytics_panel,
+                                                   text="""ALGORITHM SPEED"""
+                                                   )
 
 
-
-def start_button_pressed(draw, grid, store):
-    print('start pressed')
+def start_button_pressed(draw, grid):
     # clear_path(WIN, grid, ROWS, WIDTH)
     if store.start and store.end:
+        store.slider_val = slider.get_current_value()
         for row in grid:
             for node in row:
                 node.update_neighbors(grid)
@@ -177,17 +185,6 @@ def draw(win, grid, rows, width):
 
     pygame.display.update()
 
-# def clear_path(win, grid, rows, width):
-
-#     for row in grid:
-#         for node in row:
-#             if node.type is not START and node.type is not END and node.type is not WALL:
-#                 node.type = EMPTY
-#                 node.draw(win)
-
-
-#     pygame.display.update()
-
 
 def get_clicked_pos(pos, rows, width):
     gap = width // rows
@@ -243,8 +240,8 @@ def main(win, width):
 
                 if event.user_type == pygame_gui.UI_BUTTON_PRESSED:  
                     if event.ui_element == start_button: # START BUTTON
-                        start_button_pressed(draw_func, grid, store)
-                        analytics_text_box.html_text = analytics_text_box.html_text + '<font color=’#F25400’ size=3.5><br> {2} <br> Nodes Searched: {0} <br> Nodes Seen: {1}<br></font>'.format(algorithms.nodes_searched,algorithms.nodes_seen, store.algorithm_selected)
+                        start_button_pressed(draw_func, grid)
+                        analytics_text_box.html_text = analytics_text_box.html_text + '<font color="#F25400" size=3.5><br> {2} <br> Nodes Searched: {0} <br> Nodes Seen: {1}<br></font>'.format(algorithms.nodes_searched,algorithms.nodes_seen, store.algorithm_selected)
                         analytics_text_box.rebuild()
                     if event.ui_element == clear_button:   # Clear button
                         reset()
