@@ -7,16 +7,18 @@ import time
 
 CLOSED = "#00F2DE"
 CURRENT_NODE = "#008DF2"
-OPEN = "#C1F200"  # (64,224,208)
-BLUE = (64, 206, 227)
-YELLOW = (255, 255, 0)
-EMPTY = (255, 255, 255)
+
+CLOSED = "#00F2DE"
+OPEN =  "#C1F200"
+EMPTY = "#FFFFFF"
 WALL = "#103444"
 PATH = "#9900F2"
 START = "#F25400"
+END = "#F2007C"
+
+
 LINE = (70, 102, 255)
 GRID_LINE = (176, 220, 252)
-END = "#F2007C"
 nodes_searched = ""
 nodes_seen = ""
 def h_score(p1, p2):

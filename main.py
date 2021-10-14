@@ -98,16 +98,15 @@ slider_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 445), (
 
 
 CLOSED = "#00F2DE"
-OPEN = "#C1F200"
-BLUE = (64, 206, 227)
-YELLOW = (255, 255, 0)
-EMPTY = (255, 255, 255)
+OPEN =  "#C1F200"
+EMPTY = "#FFFFFF"
 WALL = "#103444"
 PATH = "#9900F2"
 START = "#F25400"
+END = "#F2007C"
+
 LINE = (70, 102, 255)
 GRID_LINE = (176, 220, 252)
-END = "#F2007C"
 
 
 def start_button_pressed(draw, grid):
