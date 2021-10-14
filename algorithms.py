@@ -2,7 +2,6 @@
 import pygame
 import queue 
 import main
-import store
 import time 
 
 
@@ -58,15 +57,18 @@ def A_star(win, draw, grid, start, end, store):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+            if event.type == pygame.KEYDOWN:  
+                if event.key == pygame.K_SPACE: 
+                    main.reset()
             if store.step_mode_toggled == True or store.slider_val > 0: 
                 if event.type == pygame.KEYDOWN:  
                     if event.key == pygame.K_RETURN:
                         store.run = True  
                 if event.type == pygame.KEYDOWN:  
                     if event.key == pygame.K_RIGHT: 
-                        print('right pressed')
                         store.step_mode_toggled = False  
                         store.finish = True  
+
         if store.finish == False:
            time.sleep(store.slider_val)
         if store.run == True or store.step_mode_toggled == False:

@@ -1,26 +1,13 @@
 from pygame.event import clear
-import main
-import queue
 import pygame
+
+import main
 import algorithms
 import pygame_gui
 
 from node import Node
 #from A_Star import A_star
 from store import Store
-
-
-CLOSED = "#00F2DE"
-OPEN = "#C1F200"  # (64,224,208)
-BLUE = (64, 206, 227)
-YELLOW = (255, 255, 0)
-EMPTY = (255, 255, 255)
-WALL = "#103444"
-PATH = "#9900F2"
-START = "#F25400"
-LINE = (70, 102, 255)
-GRID_LINE = (176, 220, 252)
-END = "#F2007C"
 
 pygame.init()
 
@@ -48,8 +35,8 @@ ui_panel = pygame_gui.elements.ui_panel.UIPanel(relative_rect=pygame.Rect((-5, -
                                                 starting_layer_height=1,
                                                 manager=manager)
 analytics_panel = pygame_gui.elements.ui_panel.UIPanel(relative_rect=pygame.Rect((UI_PANEL_MIDPOINT-(LARGE_BTN_LENGTH/2)+300, UI_HEIGHT-12), (175, 600)),
-                                                starting_layer_height=2,
-                                                manager=manager)
+                                                       starting_layer_height=2,
+                                                       manager=manager)
 start_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((UI_PANEL_MIDPOINT-(SMALL_BTN_LENGTH/2)-50, UI_BUTTON_Y_POS), (SMALL_BTN_LENGTH, UI_BUTTON_HEIGHT)),
                                             text='START',
                                             manager=manager,
@@ -71,40 +58,56 @@ heuristic_dropdown = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rec
                                                         starting_option="Show Heuristic",
                                                         manager=manager,
                                                         )
-step_mode_dropdown = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rect((10,300), (150, 50)),
+step_mode_dropdown = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rect((10, 300), (150, 50)),
                                                         options_list=[
-                                                            "NORMAL MODE","STEP MODE"],
+                                                            "NORMAL MODE", "STEP MODE"],
                                                         starting_option="NORMAL MODE",
                                                         manager=manager,
                                                         container=analytics_panel
                                                         )
-analytics_text_box = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect((0,0), (175, 300)),
+analytics_text_box = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect((0, 0), (175, 300)),
                                                    manager=manager, container=analytics_panel,
 
                                                    html_text=""" <strong><u>Analytics</></u></strong>"""
-                                                   
+
                                                    )
 
-step_mode_text_box = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0,350,180, 25),
-                                                   manager=manager, container=analytics_panel,
-                                                   text="""WHILE IN STEP MODE"""
-                                                   )
-step_mode_text_box2 = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0,370), (180, 25)),
-                                                   manager=manager, container=analytics_panel,
-                                                   text="""press enter to step"""
-                                                   )
-step_mode_text_box3 = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0,390), (180, 25)),
-                                                   manager=manager, container=analytics_panel,
-                                                   text="""press -> to skip"""
-                                                   )
-slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect((-5,420), (180, 25)),
-                                                   manager=manager, container=analytics_panel,
-                                                   start_value=0,value_range=(.3,0)                                                   
-                                                   )
-slider_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0,445), (180, 25)),
-                                                   manager=manager, container=analytics_panel,
-                                                   text="""ALGORITHM SPEED"""
-                                                   )
+step_mode_text_box = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 350, 180, 25),
+                                                 manager=manager, container=analytics_panel,
+                                                 text="""WHILE IN STEP MODE"""
+                                                 )
+step_mode_text_box2 = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 370), (180, 25)),
+                                                  manager=manager, container=analytics_panel,
+                                                  text="""press enter to step"""
+                                                  )
+step_mode_text_box3 = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 390), (180, 25)),
+                                                  manager=manager, container=analytics_panel,
+                                                  text="""press -> to skip"""
+                                                  )
+slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect((-5, 420), (180, 25)),
+                                                manager=manager, container=analytics_panel,
+                                                start_value=0, value_range=(.1, 0)
+                                                )
+slider_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 445), (180, 25)),
+                                           manager=manager, container=analytics_panel,
+                                           text="""ALGORITHM SPEED"""
+                                           )
+
+
+
+
+
+CLOSED = "#00F2DE"
+OPEN = "#C1F200"
+BLUE = (64, 206, 227)
+YELLOW = (255, 255, 0)
+EMPTY = (255, 255, 255)
+WALL = "#103444"
+PATH = "#9900F2"
+START = "#F25400"
+LINE = (70, 102, 255)
+GRID_LINE = (176, 220, 252)
+END = "#F2007C"
 
 
 def start_button_pressed(draw, grid):
@@ -122,20 +125,8 @@ def start_button_pressed(draw, grid):
                            grid, store.start, store.end, store)
         if store.algorithm_selected == "Best FS":
             algorithms.Best_FS(WIN, draw,
-                           grid, store.start, store.end, store)
-
-
-CLOSED = "#00F2DE"
-OPEN = "#C1F200"
-BLUE = (64, 206, 227)
-YELLOW = (255, 255, 0)
-EMPTY = (255, 255, 255)
-WALL = "#103444"
-PATH = "#9900F2"
-START = "#F25400"
-LINE = (70, 102, 255)
-GRID_LINE = (176, 220, 252)
-END = "#F2007C"
+                               grid, store.start, store.end, store)
+        analytics_text_box.set_active_effect(pygame_gui.TEXT_EFFECT_FADE_IN)
 
 
 def heuristic_checkbox_toggled():
@@ -159,10 +150,6 @@ def make_grid(rows, width):
     return grid
 
 
-def draw_buttons():
-    pass
-
-
 def draw_grid(win, rows, width):
     gap = width // rows
 
@@ -170,7 +157,6 @@ def draw_grid(win, rows, width):
         pygame.draw.line(win, LINE, (0, i * gap), (width, i * gap))
         for j in range(rows):
             pygame.draw.line(win, LINE, (j * gap, 0), (j * gap, width))
-    draw_buttons()
 
 
 def draw(win, grid, rows, width):
@@ -214,7 +200,6 @@ def reset():
 def main(win, width):
     grid = store.grid
     grid = make_grid(ROWS, width)
-    end = store.end
     def draw_func(): return draw(win, grid, ROWS, width)
     run = True
     UI_button_hovered = False
@@ -238,14 +223,15 @@ def main(win, width):
                 if event.user_type == pygame_gui.UI_BUTTON_ON_UNHOVERED:
                     UI_button_hovered = False
 
-                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:  
-                    if event.ui_element == start_button: # START BUTTON
+                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                    if event.ui_element == start_button:  # START BUTTON
                         start_button_pressed(draw_func, grid)
-                        analytics_text_box.html_text = analytics_text_box.html_text + '<font color="#F25400" size=3.5><br> {2} <br> Nodes Searched: {0} <br> Nodes Seen: {1}<br></font>'.format(algorithms.nodes_searched,algorithms.nodes_seen, store.algorithm_selected)
+                        analytics_text_box.html_text = analytics_text_box.html_text + \
+                            '<font color="#F25400" size=3.5><br> {2} <br> Nodes Searched: {0} <br> Nodes Seen: {1}<br></font>'.format(
+                                algorithms.nodes_searched, algorithms.nodes_seen, store.algorithm_selected)
                         analytics_text_box.rebuild()
                     if event.ui_element == clear_button:   # Clear button
                         reset()
-
 
                 if event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:  # drop down
                     if event.ui_element == algorithm_dropdown:
@@ -262,16 +248,14 @@ def main(win, width):
                     elif event.ui_element == heuristic_dropdown:
                         if event.text == "Show Heuristic":
                             store.heuristic_toggled = True
-                            print(store.algorithm_selected)
                         if event.text == "Hide Heuristic":
                             store.heuristic_toggled = False
-                    
+
                     elif event.ui_element == step_mode_dropdown:
                         if event.text == "NORMAL MODE":
-                            store.step_mode_toggled = False 
+                            store.step_mode_toggled = False
                         if event.text == "STEP MODE":
-                            store.step_mode_toggled = True 
-
+                            store.step_mode_toggled = True
 
             elif pygame.mouse.get_pressed()[0]:  # LEFT
                 if UI_button_hovered == False:
