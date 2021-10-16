@@ -11,3 +11,8 @@ class Store():
         self.step_mode_toggled = False
         self.slider_val = 0
         self.finish = False 
+        self.nodes_searched = 0
+        self.nodes_seen = 0
+
+
+

@@ -9,11 +9,7 @@ EMPTY = "#FFFFFF"
 WALL = "#103444"
 PATH = "#9900F2"
 START = "#F25400"
-END = "#F2007C"
-
-
-
-
+END = "#F2007C"         
 
 class Node:
     def __init__(self, row, col, width, total_rows):
@@ -39,7 +35,7 @@ class Node:
         if self.row > 0 and not grid[self.row - 1][self.col].type == WALL:  # UP
             self.neighbors.append(grid[self.row - 1][self.col])
 
-        # RIGHT
+        # RIGHT 
         if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].type == WALL:
             self.neighbors.append(grid[self.row][self.col + 1])
 

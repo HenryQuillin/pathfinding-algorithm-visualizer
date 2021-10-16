@@ -125,7 +125,8 @@ def start_button_pressed(draw, grid):
         if store.algorithm_selected == "Best FS":
             algorithms.Best_FS(WIN, draw,
                                grid, store.start, store.end, store)
-        analytics_text_box.set_active_effect(pygame_gui.TEXT_EFFECT_FADE_IN)
+        
+        
 
 
 def heuristic_checkbox_toggled():
@@ -160,14 +161,11 @@ def draw_grid(win, rows, width):
 
 def draw(win, grid, rows, width):
     win.fill(EMPTY)
-
     for row in grid:
         for node in row:
             node.draw(win)
-
     draw_grid(win, rows, width)
     manager.draw_ui(WIN)
-
     pygame.display.update()
 
 
@@ -199,7 +197,7 @@ def reset():
 def main(win, width):
     grid = store.grid
     grid = make_grid(ROWS, width)
-    def draw_func(): return draw(win, grid, ROWS, width)
+    draw_func = lambda: draw(win, grid, ROWS, width)
     run = True
     UI_button_hovered = False
     draw_gui(grid)
@@ -219,16 +217,16 @@ def main(win, width):
             elif event.type == pygame.USEREVENT:
                 if event.user_type == pygame_gui.UI_BUTTON_ON_HOVERED:
                     UI_button_hovered = True
-                if event.user_type == pygame_gui.UI_BUTTON_ON_UNHOVERED:
-                    UI_button_hovered = False
 
                 if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                     if event.ui_element == start_button:  # START BUTTON
                         start_button_pressed(draw_func, grid)
                         analytics_text_box.html_text = analytics_text_box.html_text + \
                             '<font color="#F25400" size=3.5><br> {2} <br> Nodes Searched: {0} <br> Nodes Seen: {1}<br></font>'.format(
-                                algorithms.nodes_searched, algorithms.nodes_seen, store.algorithm_selected)
+                                store.nodes_searched, store.nodes_seen, store.algorithm_selected)
                         analytics_text_box.rebuild()
+                        store.nodes_searched = 0
+                        store.nodes_seen = 0
                     if event.ui_element == clear_button:   # Clear button
                         reset()
 
