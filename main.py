@@ -6,7 +6,6 @@ import algorithms
 import pygame_gui
 
 from node import Node
-#from A_Star import A_star
 from store import Store
 
 pygame.init()
