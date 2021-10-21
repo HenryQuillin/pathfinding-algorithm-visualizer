@@ -58,11 +58,17 @@ To get a local copy up and running follow these simple steps.
 
 <!-- USAGE EXAMPLES -->
 ## Usage 
-![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/GcsEVgL.png)
-![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/CP0rFlM.png)
-![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/iL4OOQc.png)
-![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/byyHQbQ.png)
-![Screen Shot 2021-04-05 at 1 06 53 PM](https://i.imgur.com/qJzUMnv.png)
+A*
+![Screen Shot 2021-04-05 at 1 06 53 PM](screenshots/astar.png)
+A*
+![Screen Shot 2021-04-05 at 1 06 53 PM](screenshots/astar2.png)
+Breadth First Search 
+![Screen Shot 2021-04-05 at 1 06 53 PM](screenshots/bfs.png)
+Breadth First Search 
+![Screen Shot 2021-04-05 at 1 06 53 PM](screenshots/bfs2.png)
+Best First Search 
+![Screen Shot 2021-04-05 at 1 06 53 PM](screenshots/bestfs.png)
+
 
 <!-- CONTRIBUTING -->
 ## Contributing
