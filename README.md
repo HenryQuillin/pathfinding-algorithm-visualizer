@@ -45,15 +45,15 @@ To get a local copy up and running follow these simple steps.
    ```
    git clone https://github.com/HenryQuillin/PONG-with-a-twist.git
    ```
-2. Install pygame with 
+2. Run setup.py 
    ```
-   pip install pygame 
+   sudo python3 setup.py install
    ```
-6. Install pygame_gui
-   ```
-   pip install pygame_gui 
-   ``` 
+6. Wait for the build folder to appear 
 8. Run 'main.py'
+   ```
+   python3 main.py
+   ``` 
 
 
 <!-- USAGE EXAMPLES -->
