@@ -60,6 +60,7 @@ def A_star(win, draw, grid, start, end, store):
     open_set_hash = {start}
 
     while not open_set.empty():
+        start.type = START
         for event in pygame.event.get(): 
             if event.type == pygame.QUIT: #allows the user to exit the program while the algorithm is running 
                 pygame.quit()
@@ -82,6 +83,7 @@ def A_star(win, draw, grid, start, end, store):
             
             if current == end: # if this node is the end node, recontruct path and exit function 
                 reconstruct_path(came_from, end, draw, start)
+                start.type = START
                 end.type = END
                 return True
             if current is not start and current is not end: # 
@@ -127,6 +129,7 @@ def Best_FS(win, draw, grid, start, end, store):
 
     while not open_set.empty():
 
+        start.type = START
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -191,6 +194,7 @@ def BFS(win, draw, grid, start, end, store):
     open_set_hash = {start}
 
     while not open_set.empty():
+        start.type = START
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
