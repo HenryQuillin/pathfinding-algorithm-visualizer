@@ -29,6 +29,7 @@ This Pathfinding Algorithm Visualizer does exactly what it sounds like it does -
 
 ### Built With
 
+* Python
 * [PyGame](http://pygame-gui.readthedocs.io)
 * [PyGame GUI](https://pygame-gui.readthedocs.io/en/latest/)
 
