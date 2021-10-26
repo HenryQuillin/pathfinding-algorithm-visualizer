@@ -46,7 +46,7 @@ To get a local copy up and running follow these simple steps.
 
 1. Clone the repo
    ```
-   git clone https://github.com/HenryQuillin/PONG-with-a-twist.git
+   git clone https://github.com/HenryQuillin/pathfinding-algorithm-visualizer
    ```
 2. Run setup.py 
    ```
