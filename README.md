@@ -29,6 +29,7 @@ This Pathfinding Algorithm Visualizer does exactly what it sounds like it does -
 
 ### Built With
 
+* Python
 * [PyGame](http://pygame-gui.readthedocs.io)
 * [PyGame GUI](https://pygame-gui.readthedocs.io/en/latest/)
 
@@ -39,11 +40,13 @@ This Pathfinding Algorithm Visualizer does exactly what it sounds like it does -
 To get a local copy up and running follow these simple steps.
 
 
-### Installation
+### Installation 
+
+(These are Mac Commands, but the general steps still apply for Microsoft devices)
 
 1. Clone the repo
    ```
-   git clone https://github.com/HenryQuillin/PONG-with-a-twist.git
+   git clone https://github.com/HenryQuillin/pathfinding-algorithm-visualizer
    ```
 2. Run setup.py 
    ```
