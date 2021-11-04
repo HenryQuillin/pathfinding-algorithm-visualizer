@@ -94,8 +94,6 @@ slider_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 445), (
 
 
 
-
-
 CLOSED = "#00F2DE"
 OPEN =  "#C1F200"
 EMPTY = "#FFFFFF"
@@ -137,7 +135,7 @@ def heuristic_checkbox_toggled():
         store.heuristic_toggled = True
 
 
-def make_grid(rows, width):
+def make_grid(rows, width):# build the 2d grid array 
     grid = []
     gap = width // rows
     for i in range(rows):
@@ -149,16 +147,15 @@ def make_grid(rows, width):
     return grid
 
 
-def draw_grid(win, rows, width):
+def draw_grid(win, rows, width): # draw the lines that make the grid 
     gap = width // rows
-
     for i in range(rows):
         pygame.draw.line(win, LINE, (0, i * gap), (width, i * gap))
         for j in range(rows):
             pygame.draw.line(win, LINE, (j * gap, 0), (j * gap, width))
 
 
-def draw(win, grid, rows, width):
+def draw(win, grid, rows, width): # draw all the nodes on the grid 
     win.fill(EMPTY)
     for row in grid:
         for node in row:
@@ -168,7 +165,7 @@ def draw(win, grid, rows, width):
     pygame.display.update()
 
 
-def get_clicked_pos(pos, rows, width):
+def get_clicked_pos(pos, rows, width): # get the position of the mouse
     gap = width // rows
     y, x = pos
 
@@ -179,7 +176,6 @@ def get_clicked_pos(pos, rows, width):
 
 
 def draw_gui(grid):
-
     for row in grid:
         for node in row:
             if node.y < BLACK_NODE_HEIGHT:
@@ -190,6 +186,7 @@ def draw_gui(grid):
 def reset():
     store.start = None
     store.end = None
+    store.run = False 
     main(WIN, WIDTH)
 
 
@@ -198,10 +195,10 @@ def main(win, width):
     grid = make_grid(ROWS, width)
     draw_func = lambda: draw(win, grid, ROWS, width)
     run = True
-    UI_button_hovered = False
-    draw_gui(grid)
+   #draw_gui(grid)
 
     while run:
+        UI_button_hovered = False
 
         time_delta = clock.tick(60)/1000.0
 
@@ -230,6 +227,8 @@ def main(win, width):
                         reset()
 
                 if event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:  # drop down
+                    UI_button_hovered = True
+
                     if event.ui_element == algorithm_dropdown:
                         if event.text == "A Star":
                             store.algorithm_selected = "A Star"
@@ -254,19 +253,21 @@ def main(win, width):
                             store.step_mode_toggled = True
 
             elif pygame.mouse.get_pressed()[0]:  # LEFT
-                if UI_button_hovered == False:
                     pos = pygame.mouse.get_pos()
-                    row, col = get_clicked_pos(pos, ROWS, width)
-                    node = grid[row][col]
-                    if not store.start and node != store.end and node.y > BLACK_NODE_HEIGHT:
-                        store.start = node
-                        store.start.type = START
+                    x,y = pos
+                    if y > (UI_HEIGHT + 50) and x < (UI_PANEL_MIDPOINT-(LARGE_BTN_LENGTH/2)+300):
+                        row, col = get_clicked_pos(pos, ROWS, width)
 
-                    elif not store.end and node != store.start and node.y > BLACK_NODE_HEIGHT:
-                        store.end = node
-                        store.end.type = END
-                    elif node != store.end and node != store.start and node.y > BLACK_NODE_HEIGHT:
-                        node.type = WALL
+                        node = grid[row][col]
+                        if not store.start and node != store.end:
+                            store.start = node
+                            store.start.type = START
+
+                        elif not store.end and node != store.start:
+                            store.end = node
+                            store.end.type = END
+                        elif node != store.end and node != store.start and node.y > BLACK_NODE_HEIGHT:
+                            node.type = WALL
 
             elif pygame.mouse.get_pressed()[2]:  # RIGHT
                 if UI_button_hovered == False:

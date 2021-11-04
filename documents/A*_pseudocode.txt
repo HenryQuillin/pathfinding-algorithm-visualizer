@@ -1,3 +1,64 @@
+PSEUDOCODE FOR FLOW CHART _______________
+
+// Q stores the all nodes to be searched and their corresponding F Score 
+// START is the starting node 
+
+Q = new PriorityQueue() // Q stores all nodes that havens been searched and their corresponding F Score 
+
+// G_SCORE =  new Array () // distance from the start node 
+// H_SCORE =  new Array () // distance from current node to the target node
+// F_SCORE =  new Array () // Sum of G and H score (F(n)=H(n)+G(n))
+
+
+// Set the F and G Score of all nodes to 99999 except for the start node 
+G_SCORE[START] = 0 
+for each NODE in Q
+	if NOT Q[NODE] = START then 
+		G_SCORE[NODE]  =  99999 
+        F_SCORE[NODE] = 99999
+        Q.append(NODE, F_SCORE)
+	end if  
+end loop
+
+loop while Q.hasNext() // Main loop 
+	MIN_NODE = Q.getMinimumDist() // This method finds the node in Q with the smallest distance. 
+	NODE = MIN_NODE // set the current node to MIN_NODE
+	Q.remove(NODE) // remove the current node from the queue 
+	NEIGHBORS = nodes connected to NODE
+	for NEIGHBOR in NEIGHBORS  
+        G_SCORE[NEIGHBOR] = NEIGHBOR.GetG_Score() // update the G Score of the neighbor node 
+        H_SCORE[NEIGHBOR] = NEIGHBOR.GetH_Score() // update the H Score of the neighbor node 
+		F_SCORE = G_SCORE[NEIGHBOR] + H_SCORE[NEIGHBOR] // calculate the f score of each neighbor node 
+		if F_SCORE < F_SCORE[NEIGHBOR] // if the new F Score is less than the current F score 
+			F_SCORE[NEIGHBOR] = F_SCORE // update distance of neighbor node
+            Q.append(NEIGHBOR, F_SCORE)
+		end if 
+	end loop 
+end loop 
+return DIST  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PSEUDOCODE _______________
+
+
 // neighbors = empty nodes that are to the left, right, top, or bottom of current node 
 // Inside the GetNeighbors() method: 
 //  Need to check that the adjacent node is not past the end of grid

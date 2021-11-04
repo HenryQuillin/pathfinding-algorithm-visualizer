@@ -1,0 +1,7 @@
+Users can select from 3 different algorithms to visualize on the 2d grid including A*, and Breadth-First Search, and Best-First Search.
+The user can change the location of the start and end node. 
+The user can turn any node into a ‘wall node’ that is unsearchable by the algorithm by clicking on an empty node.
+The user can access a log of previous runs that includes the name of the algorithm, node length of the shortest path, and the number of total nodes searched.  
+The visualization will also show the algorithm’s heuristic. The user can toggle this feature on and off. 
+The user can change the speed of the algorithm with a slider 
+The user can select an option that allows them to step through each operation every time they press a button. 
