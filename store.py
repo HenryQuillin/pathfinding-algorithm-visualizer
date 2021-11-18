@@ -13,6 +13,10 @@ class Store():
         self.finish = False 
         self.nodes_searched = 0
         self.nodes_seen = 0
+        self.open_nodes = 0
+        self.closed_nodes = 0
+        self.shortest_path_length = 0
+
 
 
 

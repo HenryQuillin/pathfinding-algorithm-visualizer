@@ -122,8 +122,19 @@ def start_button_pressed(draw, grid):
         if store.algorithm_selected == "Best FS":
             algorithms.Best_FS(WIN, draw,
                                grid, store.start, store.end, store)
+
+        get_analytics(grid)
         
-        
+
+def get_analytics(grid):
+    for row in grid:
+        for node in row:
+            if node.type == OPEN:
+                store.open_nodes += 1
+            if node.type == CLOSED or node.type == PATH:
+                store.closed_nodes += 1
+            if node.type == PATH:
+                store.shortest_path_length += 1 
 
 
 def heuristic_checkbox_toggled():
@@ -218,8 +229,8 @@ def main(win, width):
                     if event.ui_element == start_button:  # START BUTTON
                         start_button_pressed(draw_func, grid)
                         analytics_text_box.html_text = analytics_text_box.html_text + \
-                            '<font color="#F25400" size=3.5><br> {2} <br> Nodes Searched: {0} <br> Nodes Seen: {1}<br></font>'.format(
-                                store.nodes_searched, store.nodes_seen, store.algorithm_selected)
+                            '<font color="#F25400" size=3.5><br> {2} <br> Open Nodes: {0} <br> Closed Nodes : {1}<br><br> Shortest Path Length : {3}<br></font>'.format(
+                                store.open_nodes, store.closed_nodes, store.algorithm_selected, store.shortest_path_length)
                         analytics_text_box.rebuild()
                         store.nodes_searched = 0
                         store.nodes_seen = 0

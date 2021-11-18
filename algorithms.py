@@ -107,13 +107,14 @@ def A_star(win, draw, grid, start, end, store):
                         store.nodes_searched += 1 # update the analytics 
 
             draw() #calls the lambda function that re draws the grid 
-
             current.type = CLOSED # Make the node color blue to mark it as closed 
             store.nodes_seen += 1 # update analytics 
             store.run = False # set run to false (used for step mode)
 
     return False # exit the function. Good job computer 👌 
     
+
+
 def Best_FS(win, draw, grid, start, end, store):
     count = 0
     open_set = queue.PriorityQueue()
@@ -179,10 +180,13 @@ def Best_FS(win, draw, grid, start, end, store):
             if current != start:
                 current.type = CLOSED
                 store.nodes_seen += 1
+            
+
 
             store.run = False 
 
     return False
+
 
 
 def BFS(win, draw, grid, start, end, store):
